@@ -15,23 +15,25 @@
 
       return function(msg, url, line) {
         ErrHandling.push(msg + '#' + line);
-        self.ajax(msg, url, line);
+        self.notice(msg, ErrUrl, line);
       }
     },
-    ajax: function(msg, url, line){
-      var xmlhttp, params;
-
-      params = 'url=' + url +
+    notice: function(msg, url, line){
+      var params = 'url=' + url +
       '&message=' + msg +
       '&line=' + line +
       '&ua=' + navigator.userAgent;
 
-      xmlhttp = creatHttp();
+      this.ajax(url, params)
 
-      xmlhttp.open('post', ErrUrl, true);//获取数据
-      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-      xmlhttp.send(params);
+    },
+    ajax: function(url, params){
+        var xmlhttp = creatHttp();
 
+        xmlhttp.open('post', url, true);//获取数据
+        xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+        xmlhttp.setRequestHeader("X-Requested-With","XMLHttpRequest");
+        xmlhttp.send(params);
     }
   }
 /**
@@ -66,6 +68,10 @@
   err = new Err();
 
   win.onerror = err.run();
+  // notice current url
+  window.onload = function(){
+   // err.ajax(window.location.href, null);
+  }
 
 })(this);
 

@@ -9,14 +9,17 @@
 module.exports = {
     admin: {
         service: 'qq',
-        user: 'xxx',
-        pass: 'xxx'
+        user: 'johnqing@qq.com',
+        pass: 'password'
     },
     from: {
-        to: "xxxx", // 抄送
-        subject: "前端bug列表"
+        'http://127.0.0.1': {
+            url: 'http://127.0.0.1',
+            to: "johnqing@qq.com", // 抄送
+            subject: "前端bug列表"
+        }
     }
-}
+}`
 ```
 
 以及在 error.js 中修改：

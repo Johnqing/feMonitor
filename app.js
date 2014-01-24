@@ -2,6 +2,9 @@ var http = require('http')
     , path = require('path')
     , app = require('./lib/http')
     , route = require('./routes')
+    , pull = require('./lib/pull')
+    , crawl = require("./routes/crawl")
+    , conf = require('./config')
 
 app.set('views', __dirname + '/views');
 app.set('engine', 'n-tpl');
