@@ -34,20 +34,8 @@ exports.index = function(req, res){
         data: {}
     }
     var urlData = urlParse(req.url);
-    if(urlData.monitor == 'curr'){
-        crawl.pull(urlData.cururl, function(notMini){
-            if(!notMini.length) return;
-            data.data = notMini;
-            notice.sendNotice(data, function(error, response){
-                if(error){
-                    console.log(error);
-                    return;
-                }
-                console.log(response)
-            });
-        });
-    }else{
-        data.data = urlData;
+
+    function noticeMail(data){
         notice.sendNotice(data, function(error, response){
             if(error){
                 console.log(error);
@@ -55,6 +43,18 @@ exports.index = function(req, res){
             }
             console.log(response)
         });
+    }
+
+
+    if(urlData.monitor == 'curr'){
+        crawl.pull(urlData.cururl, function(notMini){
+            if(!notMini.length) return;
+            data.data = notMini;
+            noticeMail(data);
+        });
+    }else{
+        data.data = urlData;
+        noticeMail(data);
     }
 
     res.end();
