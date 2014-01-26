@@ -18,26 +18,26 @@ var mailOpts = {
         }
 
         this.html = html.join('');
+    },
+    sendNotice: function(req, callback){
+        this.setOpts(req);
+        this.setHtml(req);
+        nodeMail(this, req, callback);
     }
 };
 
 exports.test = function(req, res){
-    console.log(123)
     res.render('index', {
         title: '测试'
     })
 }
 
 exports.index = function(req, res){
-
-
-
-    mailOpts.setOpts(req);
-    mailOpts.setHtml(req);
     res.writeHead(200, {
         "Content-Type":"application/json; charset=UTF-8"
     });
-    nodeMail(mailOpts, req, function(error, response){
+
+    mailOpts.sendNotice(req, function(error, response){
         if(error){
             var json = {
                 errorCode: 1000,
@@ -53,7 +53,8 @@ exports.index = function(req, res){
 
         res.write(backJson);
         res.end();
-    });
+    })
+
 }
 exports.notice = function(req, res){
     //抓取页面

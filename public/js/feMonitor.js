@@ -65,7 +65,7 @@
             }();
             // 抓取当前页面
             globle.onload = function(){
-                ajax(this.url, '&curpage=1');
+                ajax(that.url, '&curpage=1');
             }
         },
         errNotice: function(msg, url, line){
