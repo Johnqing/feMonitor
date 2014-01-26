@@ -21,18 +21,17 @@ var mailOpts = {
     }
 };
 
+exports.test = function(req, res){
+    console.log(123)
+    res.render('index', {
+        title: '测试'
+    })
+}
 
 exports.index = function(req, res){
-    res.render('index', {
-        title: '前端监控系统测试'
-    });
-}
-exports.notice = function(req, res){
-    //抓取页面
-    pull(conf.crawlUrl, crawl.pull);
-}
 
-exports.error = function(req, res){
+
+
     mailOpts.setOpts(req);
     mailOpts.setHtml(req);
     res.writeHead(200, {
@@ -55,4 +54,8 @@ exports.error = function(req, res){
         res.write(backJson);
         res.end();
     });
+}
+exports.notice = function(req, res){
+    //抓取页面
+    pull(conf.crawlUrl, crawl.pull);
 }

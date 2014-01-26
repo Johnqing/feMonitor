@@ -1,8 +1,5 @@
 //TODO:分析页面中的a链接并且递归抓取
-
-
-
-var cheerio = require("cheerio")
+var cheerio = require("cheerio");
 
 exports.pull = function(data){
     if(!data){

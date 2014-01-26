@@ -22,10 +22,15 @@ module.exports = {
 }`
 ```
 
-以及在 error.js 中修改：
+在页面内引入：
 
 ```
-win.ErrUrl = '这里为该系统线上实际的地址'
+<script src="feMonitor.js"></script>
+<script>
+monitor({
+    url: '此处为前端监控系统实际请求地址'
+});
+</script>
 ```
 
 ## 运行app

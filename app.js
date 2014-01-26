@@ -12,8 +12,7 @@ app.static('public');
 
 //路由
 app.get('/', route.index);
-app.get('/error', route.error);
-
-
+//test
+app.get('/test', route.test);
 http.createServer(app).listen(80, '127.0.0.1');
 console.log('port:80. You can 127.0.0.1')
