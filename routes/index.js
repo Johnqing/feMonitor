@@ -1,23 +1,6 @@
 var notice = require('../lib/notice')
     ,crawl = require('../lib/crawl');
 
-
-function urlParse(query){
-    query = decodeURIComponent(query);
-    query = query.substring(2, query.length);
-    query = query.split('&');
-
-    var data = {};
-
-    for(var i=0; i<query.length; i++){
-        var q = query[i].split('=');
-        data[q[0]] = q[1];
-    }
-
-    return data;
-}
-
-
 exports.test = function(req, res){
     res.render('index', {
         title: '测试'
