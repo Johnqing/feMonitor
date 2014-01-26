@@ -1,30 +1,22 @@
-var nodeMail = require('../lib/mail');
-var conf = require('../config');
+var notice = require('../lib/notice')
+    ,crawl = require('../lib/crawl');
 
-var mailOpts = {
-    setOpts: function(req){
-        this.from = conf.admin.user;
-        nodeMail.setAdminConf(conf.admin);
-        var from = conf.from[req.host]
-        for(var key in from){
-            this[key] = from[key];
-        }
-    },
-    setHtml: function(data){
-        var html = [];
 
-        for(var i in data){
-            html.push('<li><strong>'+i+'：</strong> '+data[i]+'</li>');
-        }
+function urlParse(query){
+    query = decodeURIComponent(query);
+    query = query.substring(2, query.length);
+    query = query.split('&');
 
-        this.html = html.join('');
-    },
-    sendNotice: function(req, callback){
-        this.setOpts(req);
-        this.setHtml(req);
-        nodeMail(this, req, callback);
+    var data = {};
+
+    for(var i=0; i<query.length; i++){
+        var q = query[i].split('=');
+        data[q[0]] = q[1];
     }
-};
+
+    return data;
+}
+
 
 exports.test = function(req, res){
     res.render('index', {
@@ -36,27 +28,35 @@ exports.index = function(req, res){
     res.writeHead(200, {
         "Content-Type":"application/json; charset=UTF-8"
     });
-
-    mailOpts.sendNotice(req, function(error, response){
-        if(error){
-            var json = {
-                errorCode: 1000,
-                error: error
+    // 设置数据
+    var data = {
+        host: req.host,
+        data: {}
+    }
+    var urlData = urlParse(req.url);
+    if(urlData.monitor == 'curr'){
+        crawl.pull(urlData.cururl, function(notMini){
+            if(!notMini.length) return;
+            data.data = notMini;
+            notice.sendNotice(data, function(error, response){
+                if(error){
+                    console.log(error);
+                    return;
+                }
+                console.log(response)
+            });
+        });
+    }else{
+        data.data = urlData;
+        notice.sendNotice(data, function(error, response){
+            if(error){
+                console.log(error);
+                return;
             }
-        }else{
-            var json = {
-                sucCode: 0,
-                suc: response.message
-            }
-        }
-        var backJson = JSON.stringify(json)
+            console.log(response)
+        });
+    }
 
-        res.write(backJson);
-        res.end();
-    })
+    res.end();
 
-}
-exports.notice = function(req, res){
-    //抓取页面
-    pull(conf.crawlUrl, crawl.pull);
 }

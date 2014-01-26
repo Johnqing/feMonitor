@@ -65,7 +65,7 @@
             }();
             // 抓取当前页面
             globle.onload = function(){
-                ajax(that.url, '&curpage=1');
+                ajax(that.url, 'cururl='+globle.location.href+'&monitor=curr');
             }
         },
         errNotice: function(msg, url, line){
@@ -74,7 +74,7 @@
             '&line=' + line +
             '&ua=' + navigator.userAgent;
             //
-            ajax(this.url, params+'&err=1');
+            ajax(this.url, params+'&monitor=error');
         }
     }
     globle.monitor = function(opts){
