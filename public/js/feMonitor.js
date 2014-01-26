@@ -1,45 +1,16 @@
 (function(globle, undefined){
-
-    /**
-     * xmlhttp
-     * @return {[type]} [Object]
-     */
-    function creatHttp(){
-        var xmlhttp;
-        try {
-            xmlhttp = new XMLHttpRequest(); // Mozilla / Safari / IE7
-        } catch (e) {
-            // IE
-            var XMLHTTP_IDS = new Array('MSXML2.XMLHTTP.5.0',
-                'MSXML2.XMLHTTP.4.0',
-                'MSXML2.XMLHTTP.3.0',
-                'MSXML2.XMLHTTP',
-                'Microsoft.XMLHTTP' );
-            var success = false;
-            for (var i=0;i < XMLHTTP_IDS.length && !success; i++) {
-                try {
-                    xmlhttp = new ActiveXObject(XMLHTTP_IDS[i]);
-                    success = true;
-                } catch (e) {}
-            }
-            if (!success) {
-                throw new Error('Unable to create XMLHttpRequest.');
-            }
-        };
-        return xmlhttp;
-    }
-
-    function ajax(url, params){
-        var xmlhttp = creatHttp();
+    function loadjs(url, params){
         params = params ? '?'+params : '';
-        xmlhttp.open('get', url+params, true);//获取数据
-        xmlhttp.setRequestHeader("X-Requested-With","XMLHttpRequest");
-        xmlhttp.send();
+
+        var script = document.createElement('script')
+        script.type = "text/javascript";
+        script.src = url + params + '&callback=jsonp';
+        document.getElementsByTagName("head")[0].appendChild(script);
     }
 
 
     var DEFAULTCONFIG = {
-        url: '/'
+        url: 'http://fm.com'
     }
 
     /**
@@ -65,16 +36,16 @@
             }();
             // 抓取当前页面
             globle.onload = function(){
-                ajax(that.url, 'cururl='+globle.location.href+'&monitor=curr');
+                loadjs(that.url, 'cururl='+encodeURIComponent(globle.location.href)+'&monitor=curr');
             }
         },
         errNotice: function(msg, url, line){
             var params = 'url=' + url +
-            '&message=' + msg +
+            '&message=' + encodeURIComponent(msg) +
             '&line=' + line +
-            '&ua=' + navigator.userAgent;
+            '&ua=' + encodeURIComponent(navigator.userAgent);
             //
-            ajax(this.url, params+'&monitor=error');
+            loadjs(this.url, params+'&monitor=error');
         }
     }
     globle.monitor = function(opts){

@@ -33,8 +33,6 @@ exports.index = function(req, res){
         host: req.host,
         data: {}
     }
-    var urlData = urlParse(req.url);
-
     function noticeMail(data){
         notice.sendNotice(data, function(error, response){
             if(error){
@@ -44,16 +42,14 @@ exports.index = function(req, res){
             console.log(response)
         });
     }
-
-
-    if(urlData.monitor == 'curr'){
-        crawl.pull(urlData.cururl, function(notMini){
+    if(req.monitor == 'curr'){
+        crawl.pull(req.cururl, function(notMini){
             if(!notMini.length) return;
             data.data = notMini;
             noticeMail(data);
         });
     }else{
-        data.data = urlData;
+        data.data = req;
         noticeMail(data);
     }
 
