@@ -1,5 +1,6 @@
 var notice = require('../lib/notice')
-    ,crawl = require('../lib/crawl');
+    ,crawl = require('../lib/crawl')
+    ,browser = require('../lib/browser')
 
 exports.test = function(req, res){
     res.render('index', {
@@ -16,10 +17,11 @@ exports.index = function(req, res){
         host: req.host,
         data: {}
     }
-    function noticeMail(data){
+    function noticeMail(_data){
+        data.data = _data;
         notice.sendNotice(data, function(error, response){
             if(error){
-                console.log(error);
+                console.log(error.data);
                 return;
             }
             console.log(response)
@@ -28,12 +30,11 @@ exports.index = function(req, res){
     if(req.monitor == 'curr'){
         crawl.pull(req.cururl, function(notMini){
             if(!notMini.length) return;
-            data.data = notMini;
-            noticeMail(data);
+            noticeMail(notMini);
         });
     }else{
-        data.data = req;
-        noticeMail(data);
+        req.ua = browser(req.ua);
+        noticeMail(req);
     }
 
     res.end();
